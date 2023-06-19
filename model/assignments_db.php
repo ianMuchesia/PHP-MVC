@@ -11,8 +11,11 @@
          courses C ON A.courseID =C.courseID 
          ORDER BY C.courseID';
        } 
+   
        $statement = $db -> prepare($query);
-       $statement->bindValue(':course_id', $course_id);
+       if ($course_id) {
+        $statement->bindValue(':course_id', $course_id);
+    }
        $statement->execute();
        $assignment= $statement->fetchAll();
        $statement->closeCursor();
