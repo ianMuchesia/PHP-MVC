@@ -25,7 +25,69 @@ include('view/header.php');?>
 
         </form>
     </header>
+    <?php if($assignments) {?>
+        <?php foreach ($assignments as $assignment) : ?>
+            <div class="list__row">
+                <div class="list__item">
+                    <p class="bold">
+                        <?= $assignment['courseName']?>
+                    </p>
+                    <p class="bold">
+                        <?= $assignment['description']?>
+                    </p>
+
+                </div>
+                <div class="list__removeItem">
+                    <form action="." mrthod="post">
+                        <input type="hidden" name="action" value="delete_assignment">
+                        <input type="hidden" name="assignemnt_id" value="<?= $assignment['id']?>">
+                        <button class="remove-button">
+                            Remove
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+            <?php endforeach;?>
+            <?php } else {?>
+                <br>
+                <?php if($course_id) { ?>
+                    <p>No assignemnts exist for this course yet.</p>
+                <?php } else { ?>
+                    <p>No assignments exist yet.</p>
+                    <?php } ?>
+                    <br>
+                    <?php } ?>
 </section>
 
+
+
+<section id="add" class="add">
+    <h2>Add Assignment</h2>
+    <form action="." method="post" id="add__form" 
+    class="add__form">
+    <input type="hidden" name="action" value="add_assignment">
+    <div class="add__inputs">
+        <label for="">
+            Course:
+        </label>
+        <select name="course_id" id="" required>
+            <option value="">Please Select</option>
+            <?php foreach ($courses as $course): ?>
+                <option value="<?= $course['courseID']; ?>">
+            <?= $course['courseName']; ?>
+            </option>
+            <?php endforeach; ?>
+        </select>
+        <label for="">Description</label>
+        <input type="text" name="description" maxlength="120" placeholder="description" required>
+    </div>
+    <div class="add__addItem">
+        <button class="add-button bold">Add</button>
+    </div>
+</form>
+</section>
+<br>
+<p><a href=".?action=list_courses">View/Edit Courses</a></p>
 <?php
 include('view/footer.php');?>
