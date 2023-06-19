@@ -8,6 +8,7 @@ $assignment_id = filter_input(INPUT_POST, 'assignment_id', FILTER_VALIDATE_INT);
 
 $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_SPECIAL_CHARS);
 
+$course_name = filter_input(INPUT_POST, 'course_name', FILTER_SANITIZE_SPECIAL_CHARS);
 $course_id = filter_input(INPUT_POST, 'course_id', FILTER_VALIDATE_INT);
 
 if (!$course_id) {
@@ -17,14 +18,14 @@ if (!$course_id) {
 $action =  filter_input(INPUT_POST, 'action', FILTER_SANITIZE_SPECIAL_CHARS);
 
 if (!$action) {
-    $action =  filter_input(INPUT_POST, 'action', FILTER_SANITIZE_SPECIAL_CHARS);
+    $action =  filter_input(INPUT_GET, 'action', FILTER_SANITIZE_SPECIAL_CHARS);
     if (!$action) {
         $action = 'list_assignments';
     }
 }
 
-switch ($action) {
-    case "list_courses":
+switch($action) {
+    case "list_courses": 
         $courses = get_courses();
         include('view/course_list.php');
         break;
@@ -37,7 +38,7 @@ switch ($action) {
             add_assignment($course_id, $description);
             header("Location: .?course_id=$course_id");
         } else {
-            $error = "Invalid assignment data. Check all fields and try again";
+            $error = "Invalid assignment data. Check all fields and try again.";
             include('view/error.php');
             exit();
         }
@@ -47,10 +48,9 @@ switch ($action) {
             try {
                 delete_course($course_id);
             } catch (PDOException $e) {
-                $error = "You cannot delete a course if assignments exist in the course";
+                $error = "You cannot delete a course if assignments exist for it.";
                 include('view/error.php');
                 exit();
-                //throw $th;
             }
             header("Location: .?action=list_courses");
         }
@@ -60,11 +60,10 @@ switch ($action) {
             delete_assignment($assignment_id);
             header("Location: .?course_id=$course_id");
         } else {
-            $error = "missing or incorrect assignment id";
+            $error = "Missing or incorrect assignment id.";
             include('view/error.php');
         }
         break;
-
     default:
         $course_name = get_course_name($course_id);
         $courses = get_courses();
